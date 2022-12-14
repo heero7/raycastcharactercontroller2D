@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RaycastController
+namespace RaycastController2D
 {
     [RequireComponent(typeof(BoxCollider2D))]
     public class RaycastObject2D : MonoBehaviour

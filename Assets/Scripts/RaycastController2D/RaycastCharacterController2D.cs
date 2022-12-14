@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RaycastController
+namespace RaycastController2D
 {
     public class RaycastCharacterController2D : RaycastObject2D
     {
@@ -20,7 +20,7 @@ namespace RaycastController
             }
         }
 
-        public void Move(Vector2 targetVelocity)
+        public void Move(Vector2 targetVelocity, bool isStandingOnPlatform = false)
         {
             UpdateRaycastOrigins();
             Collisions.Reset();
@@ -40,7 +40,13 @@ namespace RaycastController
             {
                 HandleVerticalCollisions(ref targetVelocity);
             }
+            
             transform.Translate(targetVelocity);
+
+            if (isStandingOnPlatform)
+            {
+                Collisions.Below = true;
+            }
         }
 
         private void AscendSlope(ref Vector2 velocity, float slopeAngle)
@@ -102,16 +108,21 @@ namespace RaycastController
 
                 // Project where we WILL be (why we add velocity.x).
                 rayOrigin += Vector2.up * (HorizontalRaySpacing * i);
-                var raycastHit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+                var hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
 
                 if (showDebugLines)
                 {
                     Debug.DrawRay(rayOrigin, Vector3.right * (directionX * rayLength), Color.red);
                 }
 
-                if (raycastHit)
+                if (hit)
                 {
-                    var slopeAngle = Vector2.Angle(raycastHit.normal, Vector2.up);
+                    if (hit.distance == 0)
+                    {
+                        continue;
+                    }
+                    
+                    var slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
                     if (i == 0 && slopeAngle <= MAXIMUM_ASCEND_SLOPE_ANGLE)
                     {
                         if (Collisions.DescendingSlope)
@@ -122,7 +133,7 @@ namespace RaycastController
                         var distanceToBeginningOfTheSlope = 0f;
                         if (slopeAngle != Collisions.SlopeAnglePreviousFrame)
                         {
-                            distanceToBeginningOfTheSlope = raycastHit.distance - SkinWidth;
+                            distanceToBeginningOfTheSlope = hit.distance - SkinWidth;
                             velocity.x -= distanceToBeginningOfTheSlope * directionX;
                         }
                         AscendSlope(ref velocity, slopeAngle);
@@ -131,8 +142,8 @@ namespace RaycastController
 
                     if (!Collisions.AscendingSlope || slopeAngle > MAXIMUM_ASCEND_SLOPE_ANGLE)
                     {
-                        velocity.x = (raycastHit.distance - SkinWidth) * directionX;
-                        rayLength = raycastHit.distance;
+                        velocity.x = (hit.distance - SkinWidth) * directionX;
+                        rayLength = hit.distance;
 
                         if (Collisions.AscendingSlope)
                         {

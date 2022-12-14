@@ -1,4 +1,4 @@
-using RaycastController;
+using RaycastController2D;
 using UnityEngine;
 
 [RequireComponent(typeof(RaycastCharacterController2D))]

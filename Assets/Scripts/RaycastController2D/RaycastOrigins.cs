@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RaycastController
+namespace RaycastController2D
 {
     public struct RaycastOrigins
     {
