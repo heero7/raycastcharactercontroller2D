@@ -6,12 +6,13 @@ namespace RaycastController2D
     public class RaycastObject2D : MonoBehaviour
     {
         private const int MINIMUM_RAY_COUNT = 2;
+        private const float DISTANCE_BETWEEN_RAYS = 0.25f;
     
         protected const float SkinWidth = 0.015f;
 
         [Header("Raycast Controller Variables")]
-        [SerializeField] protected int horizontalRayCount = 4;
-        [SerializeField] protected int verticalRayCount = 4;
+        protected int HorizontalRayCount;
+        protected int VerticalRayCount;
     
         [SerializeField]
         [Tooltip("These are the layers the controller will collide with.")]
@@ -51,14 +52,20 @@ namespace RaycastController2D
             // TODO: OnValidate, this should change.
             var bounds = _boxCollider2D.bounds;
             bounds.Expand(SkinWidth * -2); // Shrink the bounds of the collider inwards.
+
+            var boundsWidth = bounds.size.x;
+            var boundsHeight = bounds.size.y;
+
+            HorizontalRayCount = Mathf.RoundToInt(boundsHeight / DISTANCE_BETWEEN_RAYS);
+            VerticalRayCount = Mathf.RoundToInt(boundsWidth / DISTANCE_BETWEEN_RAYS);
         
             // Ensure that there are at least two rays firing for collision detection.
-            horizontalRayCount = Mathf.Clamp(horizontalRayCount, MINIMUM_RAY_COUNT, int.MaxValue);
-            verticalRayCount = Mathf.Clamp(verticalRayCount, MINIMUM_RAY_COUNT, int.MaxValue);
+            HorizontalRayCount = Mathf.Clamp(HorizontalRayCount, MINIMUM_RAY_COUNT, int.MaxValue);
+            VerticalRayCount = Mathf.Clamp(VerticalRayCount, MINIMUM_RAY_COUNT, int.MaxValue);
 
             // Calculate spacing between each ray.
-            HorizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
-            VerticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
+            HorizontalRaySpacing = bounds.size.y / (HorizontalRayCount - 1);
+            VerticalRaySpacing = bounds.size.x / (VerticalRayCount - 1);
         }  
     }
 }

@@ -14,7 +14,7 @@ namespace RaycastController2D
         [SerializeField] private Vector2[] localWayPoints;
 
         private Vector2[] _globalWayPoints;
-        private List<PassengerMovement> _passengerMovements;
+        private readonly List<PassengerMovement> _passengerMovements = new();
         private readonly Dictionary<Transform, RaycastCharacterController2D> _raycastControllerCache = new();
         
         private int _fromWaypointIndex;
@@ -56,13 +56,13 @@ namespace RaycastController2D
             
             var toWayPointIndex = (_fromWaypointIndex + 1) % _globalWayPoints.Length;
             var distanceBetweenWaypoints =
-                Vector3.Distance(_globalWayPoints[_fromWaypointIndex], _globalWayPoints[toWayPointIndex]);
+                Vector2.Distance(_globalWayPoints[_fromWaypointIndex], _globalWayPoints[toWayPointIndex]);
             _percentageBetweenWaypoints += Time.deltaTime * platformSpeed / distanceBetweenWaypoints;
             _percentageBetweenWaypoints = Mathf.Clamp01(_percentageBetweenWaypoints);
 
             var easedPercentBetweenWaypoints = Ease(_percentageBetweenWaypoints);
 
-            var newPosition = Vector3.Lerp(_globalWayPoints[_fromWaypointIndex], _globalWayPoints[toWayPointIndex], easedPercentBetweenWaypoints);
+            var newPosition = Vector2.Lerp(_globalWayPoints[_fromWaypointIndex], _globalWayPoints[toWayPointIndex], easedPercentBetweenWaypoints);
 
             if (_percentageBetweenWaypoints >= 1)
             {
@@ -80,7 +80,7 @@ namespace RaycastController2D
 
                 _nextTimePlatformCanMove = Time.time + waitTime;
             }
-            return newPosition - transform.position;
+            return newPosition - (Vector2) transform.position;
         }
 
         private void MovePassengers(bool shouldMoveBeforeMovePlatform)
@@ -102,18 +102,17 @@ namespace RaycastController2D
         private void CalculatePassengerMovement(Vector2 velocity)
         {
             var movedPassengers = new HashSet<Transform>();
-            _passengerMovements = new List<PassengerMovement>(); // TODO: List<T>.Clear() might be more efficient.
+            _passengerMovements.Clear(); // TODO: List<T>.Clear() might be more efficient.
             
-            
-            var directionX = (int) Mathf.Sign(velocity.x);
-            var directionY = (int) Mathf.Sign(velocity.y);
+            var directionX = Mathf.RoundToInt(Mathf.Sign(velocity.x));
+            var directionY = Mathf.RoundToInt(Mathf.Sign(velocity.y));
             
             // Vertically moving platform.
             if (velocity.y != 0)
             {
                 var rayLength = Mathf.Abs(velocity.y) + SkinWidth;
 
-                for (var i = 0; i < verticalRayCount; i++)
+                for (var i = 0; i < VerticalRayCount; i++)
                 {
                     var rayOrigin = directionY == -1
                         ? RaycastOrigins.BottomLeft
@@ -145,7 +144,7 @@ namespace RaycastController2D
             {
                 var rayLength = Mathf.Abs(velocity.x) + SkinWidth;
 
-                for (var i = 0; i < horizontalRayCount; i++)
+                for (var i = 0; i < HorizontalRayCount; i++)
                 {
                     var rayOrigin = directionX == -1
                         ? RaycastOrigins.BottomLeft
@@ -174,7 +173,7 @@ namespace RaycastController2D
             {
                 var rayLength = SkinWidth * 2;
 
-                for (var i = 0; i < verticalRayCount; i++)
+                for (var i = 0; i < VerticalRayCount; i++)
                 {
                     var rayOrigin = RaycastOrigins.TopLeft + Vector2.right * (VerticalRaySpacing * i);
                     var hit = Physics2D.Raycast(rayOrigin, Vector2.up, rayLength, passengerMask);
@@ -203,19 +202,17 @@ namespace RaycastController2D
 
         private void OnDrawGizmos()
         {
-            if (localWayPoints != null)
-            {
-                Gizmos.color = Color.red;
-                var size = 0.3f;
+            if (localWayPoints == null) return;
+            Gizmos.color = Color.red;
+            const float MARKER_LENGTH = 0.3f;
 
-                for (var i = 0; i < localWayPoints.Length; i++)
-                {
-                    var globalWayPointPosition = Application.isPlaying 
-                        ? (Vector3) _globalWayPoints[i]
-                        : (Vector3) localWayPoints[i] + transform.position;
-                    Gizmos.DrawLine(globalWayPointPosition - Vector3.up * size, globalWayPointPosition + Vector3.up * size);
-                    Gizmos.DrawLine(globalWayPointPosition - Vector3.left * size, globalWayPointPosition + Vector3.left * size);
-                }
+            for (var i = 0; i < localWayPoints.Length; i++)
+            {
+                var globalWayPointPosition = Application.isPlaying 
+                    ? (Vector3) _globalWayPoints[i]
+                    : (Vector3) localWayPoints[i] + transform.position;
+                Gizmos.DrawLine(globalWayPointPosition - Vector3.up * MARKER_LENGTH, globalWayPointPosition + Vector3.up * MARKER_LENGTH);
+                Gizmos.DrawLine(globalWayPointPosition - Vector3.left * MARKER_LENGTH, globalWayPointPosition + Vector3.left * MARKER_LENGTH);
             }
         }
     }

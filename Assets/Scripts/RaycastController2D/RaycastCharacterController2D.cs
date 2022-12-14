@@ -65,7 +65,7 @@ namespace RaycastController2D
 
         private void DescendSlope(ref Vector2 velocity)
         {
-            var directionX = (int) Mathf.Sign(velocity.x);
+            var directionX = Mathf.RoundToInt(Mathf.Sign(velocity.x));
             var rayOrigin = directionX == -1
                 ? RaycastOrigins.BottomRight
                 : RaycastOrigins.BottomLeft;
@@ -77,7 +77,7 @@ namespace RaycastController2D
                 var slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
                 if (slopeAngle != 0 && slopeAngle <= MAXIMUM_DESCEND_SLOPE_ANGLE)
                 {
-                    if (Mathf.Sign(hit.normal.x) == directionX)
+                    if (Mathf.RoundToInt(Mathf.Sign(hit.normal.x)) == directionX)
                     {
                         if (hit.distance - SkinWidth <= Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(velocity.x))
                         {
@@ -97,10 +97,10 @@ namespace RaycastController2D
     
         private void HandleHorizontalCollisions(ref Vector2 velocity)
         {
-            var directionX = (int) Mathf.Sign(velocity.x);
+            var directionX = Mathf.RoundToInt(Mathf.Sign(velocity.x));
             var rayLength = Mathf.Abs(velocity.x) + SkinWidth;
 
-            for (var i = 0; i < horizontalRayCount; i++)
+            for (var i = 0; i < HorizontalRayCount; i++)
             {
                 var rayOrigin = directionX == -1
                     ? RaycastOrigins.BottomLeft
@@ -112,57 +112,53 @@ namespace RaycastController2D
 
                 if (showDebugLines)
                 {
-                    Debug.DrawRay(rayOrigin, Vector3.right * (directionX * rayLength), Color.red);
+                    Debug.DrawRay(rayOrigin, Vector2.right * (directionX * rayLength), Color.red);
                 }
 
-                if (hit)
+                if (!hit) continue;
+                if (hit.distance == 0)
                 {
-                    if (hit.distance == 0)
-                    {
-                        continue;
-                    }
-                    
-                    var slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-                    if (i == 0 && slopeAngle <= MAXIMUM_ASCEND_SLOPE_ANGLE)
-                    {
-                        if (Collisions.DescendingSlope)
-                        {
-                            Collisions.DescendingSlope = false;
-                            velocity = Collisions.PreviousVelocity;
-                        }
-                        var distanceToBeginningOfTheSlope = 0f;
-                        if (slopeAngle != Collisions.SlopeAnglePreviousFrame)
-                        {
-                            distanceToBeginningOfTheSlope = hit.distance - SkinWidth;
-                            velocity.x -= distanceToBeginningOfTheSlope * directionX;
-                        }
-                        AscendSlope(ref velocity, slopeAngle);
-                        velocity.x += distanceToBeginningOfTheSlope * directionX;
-                    }
-
-                    if (!Collisions.AscendingSlope || slopeAngle > MAXIMUM_ASCEND_SLOPE_ANGLE)
-                    {
-                        velocity.x = (hit.distance - SkinWidth) * directionX;
-                        rayLength = hit.distance;
-
-                        if (Collisions.AscendingSlope)
-                        {
-                            velocity.y = Mathf.Tan(Collisions.SlopeAngle * Mathf.Deg2Rad) * Mathf.Abs(velocity.x);
-                        }
-
-                        Collisions.Left = directionX == -1;
-                        Collisions.Right = directionX == 1;
-                    }
+                    continue;
                 }
+                    
+                var slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+                if (i == 0 && slopeAngle <= MAXIMUM_ASCEND_SLOPE_ANGLE)
+                {
+                    if (Collisions.DescendingSlope)
+                    {
+                        Collisions.DescendingSlope = false;
+                        velocity = Collisions.PreviousVelocity;
+                    }
+                    var distanceToBeginningOfTheSlope = 0f;
+                    if (slopeAngle != Collisions.SlopeAnglePreviousFrame)
+                    {
+                        distanceToBeginningOfTheSlope = hit.distance - SkinWidth;
+                        velocity.x -= distanceToBeginningOfTheSlope * directionX;
+                    }
+                    AscendSlope(ref velocity, slopeAngle);
+                    velocity.x += distanceToBeginningOfTheSlope * directionX;
+                }
+
+                if (Collisions.AscendingSlope && !(slopeAngle > MAXIMUM_ASCEND_SLOPE_ANGLE)) continue;
+                velocity.x = (hit.distance - SkinWidth) * directionX;
+                rayLength = hit.distance;
+
+                if (Collisions.AscendingSlope)
+                {
+                    velocity.y = Mathf.Tan(Collisions.SlopeAngle * Mathf.Deg2Rad) * Mathf.Abs(velocity.x);
+                }
+
+                Collisions.Left = directionX == -1;
+                Collisions.Right = directionX == 1;
             }
         }
 
         private void HandleVerticalCollisions(ref Vector2 velocity)
         {
-            var directionY = (int) Mathf.Sign(velocity.y); // 1 = Moving Up, -1 Moving Down.
+            var directionY = Mathf.RoundToInt(Mathf.Sign(velocity.y)); // 1 = Moving Up, -1 Moving Down.
             var rayLength = Mathf.Abs(velocity.y) + SkinWidth;
 
-            for (var i = 0; i < verticalRayCount; i++)
+            for (var i = 0; i < VerticalRayCount; i++)
             {
                 var rayOrigin = directionY == -1
                     ? RaycastOrigins.BottomLeft
@@ -174,7 +170,7 @@ namespace RaycastController2D
             
                 if (showDebugLines)
                 {
-                    Debug.DrawRay(rayOrigin, Vector3.up * (directionY * rayLength), Color.red);
+                    Debug.DrawRay(rayOrigin, Vector2.up * (directionY * rayLength), Color.red);
                 }
 
                 if (raycastHit)
@@ -200,8 +196,8 @@ namespace RaycastController2D
 
             if (Collisions.AscendingSlope)
             {
-                var directionX = (int) Mathf.Sign(velocity.x);
-                rayLength = Mathf.Abs(velocity.x) + SkinWidth;
+                var directionX = Mathf.RoundToInt(Mathf.Sign(velocity.x));
+                rayLength = Mathf.RoundToInt(Mathf.Abs(velocity.x) + SkinWidth);
                 var rayOrigin = (directionX == -1
                     ? RaycastOrigins.BottomLeft
                     : RaycastOrigins.BottomRight) + Vector2.up * velocity.y;
