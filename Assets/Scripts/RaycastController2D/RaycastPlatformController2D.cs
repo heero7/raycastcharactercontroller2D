@@ -121,7 +121,7 @@ namespace RaycastController2D
                     rayOrigin += Vector2.right * (VerticalRaySpacing * i);
                     var hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, passengerMask);
 
-                    if (hit)
+                    if (hit && hit.distance != 0)
                     {
                         if (!movedPassengers.Contains(hit.transform))
                         {
@@ -133,6 +133,7 @@ namespace RaycastController2D
 
                             var passengerVelocity = new Vector2(pushX, pushY);
                             var isStandingOnPlatform = directionY == 1;
+                            
                             _passengerMovements.Add(new PassengerMovement(hit.transform, passengerVelocity, isStandingOnPlatform, true));
                         }
                     }
@@ -153,7 +154,7 @@ namespace RaycastController2D
                     rayOrigin += Vector2.up * (HorizontalRaySpacing * i);
                     var hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, passengerMask);
                     
-                    if (hit)
+                    if (hit && hit.distance != 0)
                     {
                         if (!movedPassengers.Contains(hit.transform))
                         {
@@ -162,7 +163,7 @@ namespace RaycastController2D
                             var pushX = velocity.x - (hit.distance - SkinWidth) * directionX;
                         
                             var passengerVelocity = new Vector2(pushX, SMALL_DOWNWARD_FORCE_TO_ALLOW_JUMPING);
-                            _passengerMovements.Add(new PassengerMovement(hit.transform, passengerVelocity, false, true));   
+                            _passengerMovements.Add(new PassengerMovement(hit.transform, passengerVelocity, false, true));
                         }
                     }
                 }
@@ -178,7 +179,7 @@ namespace RaycastController2D
                     var rayOrigin = RaycastOrigins.TopLeft + Vector2.right * (VerticalRaySpacing * i);
                     var hit = Physics2D.Raycast(rayOrigin, Vector2.up, rayLength, passengerMask);
 
-                    if (hit)
+                    if (hit && hit.distance != 0)
                     {
                         if (!movedPassengers.Contains(hit.transform))
                         {
@@ -187,7 +188,7 @@ namespace RaycastController2D
                             var pushX = velocity.x;
                         
                             var passengerVelocity = new Vector2(pushX, pushY);
-                            _passengerMovements.Add(new PassengerMovement(hit.transform, passengerVelocity, true, false));   
+                            _passengerMovements.Add(new PassengerMovement(hit.transform, passengerVelocity, true, false));
                         }
                     }
                 }

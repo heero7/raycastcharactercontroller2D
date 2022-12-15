@@ -11,8 +11,12 @@ namespace RaycastController2D
 
         public float SlopeAngle;
         public float SlopeAnglePreviousFrame;
+        
         public bool AscendingSlope;
         public bool DescendingSlope;
+        public bool IsFallingThroughPlatform;
+
+        public int FacingDirection; 
 
         public Vector2 PreviousVelocity;
 

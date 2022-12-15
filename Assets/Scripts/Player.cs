@@ -28,18 +28,20 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (_controller.CollisionData.Above || _controller.CollisionData.Below)
-        {
-            _velocity.y = 0;
-        }
         _input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         if (Input.GetKeyDown(KeyCode.Space) && _controller.CollisionData.Below)
         {
             _velocity.y = _jumpVelocity;
         }
+
         _velocity.x = _input.x * moveSpeed;
         _velocity.y += _gravity * Time.deltaTime;
-        _controller.Move(_velocity * Time.deltaTime);
+        _controller.Move(_velocity * Time.deltaTime, _input);
+        
+        if (_controller.CollisionData.Above || _controller.CollisionData.Below)
+        {
+            _velocity.y = 0;
+        }
     }
 }
