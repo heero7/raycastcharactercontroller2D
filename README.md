@@ -20,6 +20,7 @@ This essentially is like the 3D Character Controller that Unity ships. It will h
 ## Quality of Life Improvements
 1. **Needed GameObject Tags**: It would be nice to add an editor script that could make a tag for you. If this project is pushed as a package, then it won't have the tag you need for moving platforms and could forget _unless_ you remember to read the README.
 - [ ] Create an Editor Script that creates the necessary game tags when this project is loaded
+- **Create Drop downs that you can press the button to do these things!**
 2. **Necessary Project Level Settings**: There are a few settings that are absolutely necessary when using this project / package. 
 <br/> `Auto Sync Transforms`
 <br/> `Reuse Collision Callbacks`
