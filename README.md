@@ -1,4 +1,4 @@
-# CharacterController2D
+# RaycastCharacterController2D
 
 ## Description
 This controller is taken straight from [Sebastian Lague's tutorial series](https://youtube.com/playlist?list=PLFt_AvWsXl0f0hqURlhyIoAabKPgRsqjz). I only implemented episodes 1 - 8 in the controller, but took the necessary controller code from episodes 9, 10, & 12. I wanted to make this controller reusable for other projects, so the player / game specifc items like wall jumping, variable jump height, and camera were all options I left up to the game. Max slopes wasn't something I was particularly interested in, so I didn't do that either.
