@@ -20,3 +20,6 @@ This essentially is like the 3D Character Controller that Unity ships. It will h
 1. Via package manager (use [UPM Git Extension](https://github.com/mob-sakai/UpmGitExtension) to always get the latest)
 2. Pull down this code and create a unity package
 3. Copy code to project after git pull'ing
+
+## Housekeeping
+Move this to the game studio orginization
