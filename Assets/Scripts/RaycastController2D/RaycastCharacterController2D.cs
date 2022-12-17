@@ -11,22 +11,6 @@ namespace RaycastController2D
 
         private Vector2 _input;
 
-        private void OnEnable()
-        {
-            // TODO: How can we set this at this for the project without a manual step?
-            // Can we check this at project start?
-            // Do we have to do this for each GameObject that has this?
-            if (!Physics2D.autoSyncTransforms)
-            {
-                Physics2D.autoSyncTransforms = true;
-            }
-
-            if (!Physics2D.reuseCollisionCallbacks)
-            {
-                Physics2D.reuseCollisionCallbacks = true;
-            }
-        }
-
         protected override void Start()
         {
             base.Start();
@@ -205,7 +189,7 @@ namespace RaycastController2D
 
                 if (hit)
                 {
-                    if (hit.collider.CompareTag("ThroughPlatform")) // TODO: Editor Script to ensure this created
+                    if (hit.collider.CompareTag(RaycastControllerConstants.ThroughTag))
                     {
                         if (directionY == 1 || hit.distance == 0)
                         {
@@ -236,11 +220,6 @@ namespace RaycastController2D
                     Collisions.Below = directionY == -1;
                     Collisions.Above = directionY == 1;
                 }
-            
-                // TODO: Step through this before part 3.
-                // I just have a feeling this should iterate 3 more times.
-                // velocity should get updated in those times and rayLength would be 
-                // the length of the longest distance between the player and the ground.
             }
 
             if (Collisions.AscendingSlope)

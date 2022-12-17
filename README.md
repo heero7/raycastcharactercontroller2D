@@ -19,13 +19,12 @@ This essentially is like the 3D Character Controller that Unity ships. It will h
 
 ## Quality of Life Improvements
 1. **Needed GameObject Tags**: It would be nice to add an editor script that could make a tag for you. If this project is pushed as a package, then it won't have the tag you need for moving platforms and could forget _unless_ you remember to read the README.
-- [ ] Create an Editor Script that creates the necessary game tags when this project is loaded
-- **Create Drop downs that you can press the button to do these things!**
+- [x] Create an Editor Script that creates the necessary game tags when this project is loaded
 2. **Necessary Project Level Settings**: There are a few settings that are absolutely necessary when using this project / package. 
 <br/> `Auto Sync Transforms`
 <br/> `Reuse Collision Callbacks`
 Withouth these you'll get some very incosistent undesired behavior. (i.e. Jitters when an entity is moving with velocity, yuck 🤮). Goal is to be able to enable this on project load. Check if these aren't set, then just set them so we don't have to remember to. 
-- [ ] Should enabling this project setting be an editor script?
-- [ ] If it can't be, how can we solve it with a GameObject?
+- [x] Should enabling this project setting be an editor script?
+- [x] If it can't be, how can we solve it with a GameObject?
 3. Is this possible to add this to a package manager of some sort that we can just pull from? For example, instead of pulling this repo copying scripts / exporting to a package, we could just post to a local package manager and just get new versions that are published 🤷🏿‍♂️
 - [ ] Explore pushing this to a package so we can just bring in updates if this changes!

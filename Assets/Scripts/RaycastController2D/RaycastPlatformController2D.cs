@@ -14,7 +14,7 @@ namespace RaycastController2D
         [SerializeField] private Vector2[] localWayPoints;
 
         private Vector2[] _globalWayPoints;
-        private readonly List<PassengerMovement> _passengerMovements = new();
+        private readonly List<PlatformPassengerMovement> _passengerMovements = new();
         private readonly Dictionary<Transform, RaycastCharacterController2D> _raycastControllerCache = new();
         
         private int _fromWaypointIndex;
@@ -102,7 +102,7 @@ namespace RaycastController2D
         private void CalculatePassengerMovement(Vector2 velocity)
         {
             var movedPassengers = new HashSet<Transform>();
-            _passengerMovements.Clear(); // TODO: List<T>.Clear() might be more efficient.
+            _passengerMovements.Clear();
             
             var directionX = Mathf.RoundToInt(Mathf.Sign(velocity.x));
             var directionY = Mathf.RoundToInt(Mathf.Sign(velocity.y));
@@ -134,7 +134,7 @@ namespace RaycastController2D
                             var passengerVelocity = new Vector2(pushX, pushY);
                             var isStandingOnPlatform = directionY == 1;
                             
-                            _passengerMovements.Add(new PassengerMovement(hit.transform, passengerVelocity, isStandingOnPlatform, true));
+                            _passengerMovements.Add(new PlatformPassengerMovement(hit.transform, passengerVelocity, isStandingOnPlatform, true));
                         }
                     }
                 }
@@ -163,7 +163,7 @@ namespace RaycastController2D
                             var pushX = velocity.x - (hit.distance - SkinWidth) * directionX;
                         
                             var passengerVelocity = new Vector2(pushX, SMALL_DOWNWARD_FORCE_TO_ALLOW_JUMPING);
-                            _passengerMovements.Add(new PassengerMovement(hit.transform, passengerVelocity, false, true));
+                            _passengerMovements.Add(new PlatformPassengerMovement(hit.transform, passengerVelocity, false, true));
                         }
                     }
                 }
@@ -188,7 +188,7 @@ namespace RaycastController2D
                             var pushX = velocity.x;
                         
                             var passengerVelocity = new Vector2(pushX, pushY);
-                            _passengerMovements.Add(new PassengerMovement(hit.transform, passengerVelocity, true, false));
+                            _passengerMovements.Add(new PlatformPassengerMovement(hit.transform, passengerVelocity, true, false));
                         }
                     }
                 }

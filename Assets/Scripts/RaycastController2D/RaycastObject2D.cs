@@ -49,7 +49,6 @@ namespace RaycastController2D
     
         private void CalculateSpaceBetweenRaycasts()
         {
-            // TODO: OnValidate, this should change.
             var bounds = _boxCollider2D.bounds;
             bounds.Expand(SkinWidth * -2); // Shrink the bounds of the collider inwards.
 
