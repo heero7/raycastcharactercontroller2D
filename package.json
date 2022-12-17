@@ -1,0 +1,12 @@
+{
+  "name": "com.getonlinestudios.raycastcharactercontroller2d",
+  "version": "1.0.0",
+  "displayName": "RaycastCharacterController2D",
+  "description": "A CharacterController 2D based on Raycasts. Many thanks to Sebastian Lague and his YouTube tutorials.",
+  "unity": "2021.3",
+  "author": {
+    "name": "Kevin Mudiandambo",
+    "email": "kevin7.mudia@gmail.com",
+    "url": ""
+  }
+}
